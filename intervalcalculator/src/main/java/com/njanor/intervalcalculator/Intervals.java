@@ -21,10 +21,10 @@ public class Intervals {
     public String toString() {
         if (includedIntervals.isEmpty())
             return "No values";
-        return String.join(",", includedIntervals.stream().map(ci -> ci.toString()).collect(Collectors.toList()));
+        return String.join(",", includedIntervals.stream().sorted().map(ci -> ci.toString()).collect(Collectors.toList()));
     }
 
-    private class ConcreteInterval {
+    private class ConcreteInterval implements Comparable<ConcreteInterval> {
         private final int lowerBound;
         private final int upperBound;
 
@@ -36,6 +36,11 @@ public class Intervals {
         @Override
         public String toString() {
             return lowerBound + "-" + upperBound;
+        }
+
+        @Override
+        public int compareTo(ConcreteInterval other) {
+            return lowerBound - other.lowerBound;
         }
     }
 }

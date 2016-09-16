@@ -54,4 +54,16 @@ public class IntervalsTest
 
         assertEquals(exceptedOutput, actualOutput);
     }
+
+    @Test
+    public void toString_OnIntervalAddedInDescendingOrder_OutputsThemInAscendingOrder() {
+        Intervals intervals = new Intervals();
+        intervals.addValues(20, 200);
+        intervals.addValues(2, 10);
+        final String expectedOutput = "2-10,20-200";
+
+        String actualOutput = intervals.toString();
+
+        assertEquals(expectedOutput, actualOutput);
+    }
 }
