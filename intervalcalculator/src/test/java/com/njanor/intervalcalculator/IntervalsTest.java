@@ -14,6 +14,19 @@ public class IntervalsTest
     }
 
     @Test
+    public void toString_WhenAddingIntervalWithUpperLowerThanLowerBound_SortsTheBoundsInTheOutput() {
+        final int lowerBound = 10;
+        final int upperBound = 1;
+        final String expectedOutput = upperBound + "-" + lowerBound;
+        Intervals intervals = new Intervals();
+        intervals.addValues(10, 1);
+
+        String actualOutput = intervals.toString();
+
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
     public void toString_onInterval_ReturnsCorrectlyFormattedRange() {
         final int lowerBound = 2;
         final int upperBound = 20;

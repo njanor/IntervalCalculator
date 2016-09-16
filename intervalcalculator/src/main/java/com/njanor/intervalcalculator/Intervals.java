@@ -9,6 +9,11 @@ public class Intervals {
     private List<ConcreteInterval> includedIntervals = new ArrayList<ConcreteInterval>();
 
     public void addValues(int lowerBound, int upperBound) {
+        if (upperBound < lowerBound) {
+            int swap = lowerBound;
+            lowerBound = upperBound;
+            upperBound = swap;
+        }
         includedIntervals.add(new ConcreteInterval(lowerBound, upperBound));
     }
 
