@@ -8,7 +8,7 @@ public class Intervals {
 
     private List<ConcreteInterval> allIncludedIntervals = new ArrayList<ConcreteInterval>();
 
-    public void addInterval(int lowerBound, int upperBound) {
+    public void includeInterval(int lowerBound, int upperBound) {
         if (upperBound < lowerBound) {
             int swap = lowerBound;
             lowerBound = upperBound;
@@ -22,22 +22,23 @@ public class Intervals {
         if (allIncludedIntervals.isEmpty())
             return "No values";
 
-        allIncludedIntervals = allIncludedIntervals.stream().sorted().collect(Collectors.toList());
-        List<ConcreteInterval> finalIncludedIntervals = getNonOverlappingIncludedIntervals();
+        List<ConcreteInterval> finalIncludedIntervals = getNonOverlappingIntervals(allIncludedIntervals);
 
         return String.join(",", finalIncludedIntervals.stream().map(ci -> ci.toString()).collect(Collectors.toList()));
     }
 
-    private List<ConcreteInterval> getNonOverlappingIncludedIntervals() {
+    private List<ConcreteInterval> getNonOverlappingIntervals(List<ConcreteInterval> concreteIntervals) {
         List<ConcreteInterval> finalIncludedIntervals = new ArrayList<>();
 
-        for (int i = 0; i < allIncludedIntervals.size(); i++) {
-            int lowerBound = allIncludedIntervals.get(i).lowerBound;
-            int upperBound = allIncludedIntervals.get(i).upperBound;
+        concreteIntervals = concreteIntervals.stream().sorted().collect(Collectors.toList());
 
-            while (i < allIncludedIntervals.size() - 1 && allIncludedIntervals.get(i + 1).lowerBoundLowerThan(upperBound)) {
+        for (int i = 0; i < concreteIntervals.size(); i++) {
+            int lowerBound = concreteIntervals.get(i).lowerBound;
+            int upperBound = concreteIntervals.get(i).upperBound;
+
+            while (i < concreteIntervals.size() - 1 && concreteIntervals.get(i + 1).lowerBoundLowerThan(upperBound)) {
                 i++;
-                upperBound = Math.max(upperBound, allIncludedIntervals.get(i).upperBound);
+                upperBound = Math.max(upperBound, concreteIntervals.get(i).upperBound);
             }
 
             finalIncludedIntervals.add(new ConcreteInterval(lowerBound, upperBound));
