@@ -1,18 +1,22 @@
 package com.njanor.intervalcalculator;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Intervals {
 
-    private ConcreteInterval concreteInterval;
+    private List<ConcreteInterval> includedIntervals = new ArrayList<ConcreteInterval>();
 
     public void addValues(int lowerBound, int upperBound) {
-        concreteInterval = new ConcreteInterval(lowerBound, upperBound);
+        includedIntervals.add(new ConcreteInterval(lowerBound, upperBound));
     }
 
     @Override
     public String toString() {
-        if (concreteInterval == null)
+        if (includedIntervals.isEmpty())
             return "No values";
-        return concreteInterval.toString();
+        return String.join(",", includedIntervals.stream().map(ci -> ci.toString()).collect(Collectors.toList()));
     }
 
     private class ConcreteInterval {

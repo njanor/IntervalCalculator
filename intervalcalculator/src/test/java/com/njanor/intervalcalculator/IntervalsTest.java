@@ -7,14 +7,14 @@ import static org.junit.Assert.assertEquals;
 public class IntervalsTest
 {
     @Test
-    public void toString_OnEmptyInterval_ShouldReturnNoValues() {
+    public void toString_OnEmptyInterval_ReturnsNoValues() {
         Intervals intervals = new Intervals();
 
         assertEquals("No values", intervals.toString());
     }
 
     @Test
-    public void toString_onInterval_ShouldReturnCorrectlyFormattedRange() {
+    public void toString_onInterval_ReturnsCorrectlyFormattedRange() {
         final int lowerBound = 2;
         final int upperBound = 20;
         final String expectedOutput = lowerBound + "-" + upperBound;
@@ -24,5 +24,21 @@ public class IntervalsTest
         String actualOutput = intervals.toString();
 
         assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    public void toString_OnIntervalWithTwoRanges_ReturnsCorrectlyFormattedRanges() {
+        final int firstLowerBound = 2;
+        final int firstUpperBound = 4;
+        final int secondLowerBound = 10;
+        final int secondUpperBound = 200;
+        final String exceptedOutput = firstLowerBound + "-" + firstUpperBound + "," + secondLowerBound + "-" + secondUpperBound;
+        Intervals intervals = new Intervals();
+        intervals.addValues(firstLowerBound, firstUpperBound);
+        intervals.addValues(secondLowerBound, secondUpperBound);
+
+        String actualOutput = intervals.toString();
+
+        assertEquals(exceptedOutput, actualOutput);
     }
 }
