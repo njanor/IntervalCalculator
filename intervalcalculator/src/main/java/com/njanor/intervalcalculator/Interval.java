@@ -1,5 +1,8 @@
 package com.njanor.intervalcalculator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Interval implements Comparable<Interval> {
     private final int lowerBound;
     private final int upperBound;
@@ -63,5 +66,20 @@ public class Interval implements Comparable<Interval> {
     @Override
     public int compareTo(Interval other) {
         return lowerBound - other.lowerBound;
+    }
+
+    public List<Interval> except(Interval other) {
+        List<Interval> result = new ArrayList<>();
+        if (!overlapsWith(other)) {
+            result.add(this);
+        } else {
+            if (upperBound > other.upperBound) {
+                result.add(new Interval(other.upperBound + 1, upperBound));
+            }
+            if (lowerBound < other.lowerBound) {
+                result.add(new Interval(lowerBound, other.getLowerBound() - 1));
+            }
+        }
+        return result;
     }
 }
