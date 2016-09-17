@@ -30,8 +30,8 @@ public class IntervalInterpreterTest {
         final String input = "2-10,11-100,250-300";
         List<Interval> interpretedIntervals = IntervalInterpreter.interpretIntervals("(" + input + ")");
         assertEquals(3, interpretedIntervals.size());
-        IntervalCalculator intervalCalculator = new IntervalCalculator();
-        interpretedIntervals.forEach(intervalCalculator::includeInterval);
-        assertEquals(input, intervalCalculator.toString());
+        Intervals intervals = new Intervals();
+        interpretedIntervals.forEach(intervals::includeInterval);
+        assertEquals(input, intervals.toString());
     }
 }

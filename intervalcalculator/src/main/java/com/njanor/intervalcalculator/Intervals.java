@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class IntervalCalculator {
+public class Intervals {
 
     private List<Interval> allIncludedIntervals = new ArrayList<>();
     private List<Interval> allExcludedIntervals = new ArrayList<>();

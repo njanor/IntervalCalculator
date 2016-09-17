@@ -17,10 +17,10 @@ public class IntervalCalculatorApplication
             return;
         }
 
-        IntervalCalculator intervalCalculator = new IntervalCalculator();
-        includeIntervals.forEach(intervalCalculator::includeInterval);
-        excludeIntervals.forEach(intervalCalculator::excludeInterval);
+        Intervals intervals = new Intervals();
+        includeIntervals.forEach(intervals::includeInterval);
+        excludeIntervals.forEach(intervals::excludeInterval);
 
-        System.out.println(intervalCalculator);
+        System.out.println(intervals);
     }
 }
