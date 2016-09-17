@@ -21,16 +21,16 @@ public class Intervals {
     public String toString() {
         allIncludedIntervals = getNonOverlappingIntervals(allIncludedIntervals);
         allExcludedIntervals = getNonOverlappingIntervals(allExcludedIntervals);
-        List<Interval> finalIntervals = getIntervalsAndExclude(allIncludedIntervals, allExcludedIntervals);
+        List<Interval> actuallyIncludedIntervals = getIncludedIntervalsButRemoveExcludedIntervals(allIncludedIntervals, allExcludedIntervals);
 
-        if (finalIntervals.isEmpty())
+        if (actuallyIncludedIntervals.isEmpty())
             return "No values";
 
-        return String.join(",", finalIntervals.stream().map(ci -> ci.toString()).collect(Collectors.toList()));
+        return String.join(",", actuallyIncludedIntervals.stream().map(Interval::toString).collect(Collectors.toList()));
     }
 
     private List<Interval> getNonOverlappingIntervals(List<Interval> intervals) {
-        List<Interval> finalIncludedIntervals = new ArrayList<>();
+        List<Interval> nonOverlappingIntervals = new ArrayList<>();
 
         intervals = intervals.stream().sorted().collect(Collectors.toList());
 
@@ -38,44 +38,56 @@ public class Intervals {
             int lowerBound = intervals.get(i).getLowerBound();
             int upperBound = intervals.get(i).getUpperBound();
 
-            while (i < intervals.size() - 1 && intervals.get(i + 1).lowerBoundLowerThan(upperBound)) {
+            while (i < intervals.size() - 1 && intervals.get(i + 1).lowerBoundLowerThanOrEqualTo(upperBound)) {
                 i++;
                 upperBound = Math.max(upperBound, intervals.get(i).getUpperBound());
             }
 
-            finalIncludedIntervals.add(new Interval(lowerBound, upperBound));
+            nonOverlappingIntervals.add(new Interval(lowerBound, upperBound));
         }
-        return finalIncludedIntervals;
+        return nonOverlappingIntervals;
     }
 
-    private List<Interval> getIntervalsAndExclude(List<Interval> includedIntervals, List<Interval> excludedIntervals) {
-        List<Interval> intervals = new ArrayList<>();
-        for (int i = 0; i < includedIntervals.size(); i++) {
-            Interval currentIncludeInterval = includedIntervals.get(i);
-            for (int j = 0; j < excludedIntervals.size() && currentIncludeInterval != null; j++) {
-                Interval currentExcludeInterval = excludedIntervals.get(j);
-                if (currentIncludeInterval.overlapsWith(currentExcludeInterval)) {
-                    if (currentIncludeInterval.lowerBoundLowerThan(currentExcludeInterval.getLowerBound())) {
-                        intervals.add(new Interval(currentIncludeInterval.getLowerBound(), currentExcludeInterval.getLowerBound() - 1));
-                        if (currentIncludeInterval.upperBoundGreaterThan(currentExcludeInterval.getUpperBound())) {
-                            currentIncludeInterval = new Interval(currentExcludeInterval.getUpperBound() + 1, currentIncludeInterval.getUpperBound());
-                        } else {
-                            currentIncludeInterval = null;
-                        }
-                    }
-                    if (currentIncludeInterval != null && currentExcludeInterval.lowerBoundLowerThan(currentIncludeInterval.getLowerBound())) {
-                        if (currentExcludeInterval.upperBoundGreaterThan(currentIncludeInterval.getUpperBound())) {
-                            currentIncludeInterval = null;
-                        } else {
-                            currentIncludeInterval = new Interval(currentExcludeInterval.getUpperBound() + 1, currentIncludeInterval.getUpperBound());
-                        }
-                    }
-                }
-            }
-            if (currentIncludeInterval != null)
-                intervals.add(currentIncludeInterval);
+    private List<Interval> getIncludedIntervalsButRemoveExcludedIntervals(List<Interval> includedIntervals, List<Interval> excludedIntervals) {
+        List<Interval> finalIntervals = new ArrayList<>();
+        for (Interval currentIncludedInterval : includedIntervals) {
+            addIntervalsAfterExcludingRelevantIntervals(finalIntervals, currentIncludedInterval, excludedIntervals);
         }
-        return intervals;
+        return finalIntervals;
+    }
+
+    private void addIntervalsAfterExcludingRelevantIntervals(List<Interval> finalIntervals, Interval currentIncludedInterval, List<Interval> excludedIntervals) {
+        for (Interval currentExcludedInterval : excludedIntervals) {
+            if (currentIncludedInterval.overlapsWith(currentExcludedInterval)) {
+                currentIncludedInterval = addIntervalBeforeExcludedIntervalAndReturnIntervalAfterExcludedInterval(finalIntervals, currentIncludedInterval, currentExcludedInterval);
+            }
+            if (currentIncludedInterval == null)
+                return;
+        }
+        finalIntervals.add(currentIncludedInterval);
+    }
+
+    private Interval addIntervalBeforeExcludedIntervalAndReturnIntervalAfterExcludedInterval(List<Interval> finalIntervals, Interval currentIncludedInterval, Interval currentExcludedInterval) {
+        if (currentIncludedInterval.lowerBoundLowerThanOrEqualTo(currentExcludedInterval.getLowerBound())) {
+            if (currentIncludedInterval.getLowerBound() != currentExcludedInterval.getLowerBound()) {
+                finalIntervals.add(new Interval(currentIncludedInterval.getLowerBound(), currentExcludedInterval.getLowerBound() - 1));
+            }
+            if (currentIncludedInterval.upperBoundGreaterThanOrEqualTo(currentExcludedInterval.getUpperBound())) {
+                if (currentIncludedInterval.getUpperBound() != currentExcludedInterval.getUpperBound()) {
+                    currentIncludedInterval = new Interval(currentExcludedInterval.getUpperBound() + 1, currentIncludedInterval.getUpperBound());
+                }
+            } else {
+                currentIncludedInterval = null;
+            }
+        }
+        if (currentIncludedInterval != null && currentExcludedInterval.lowerBoundLowerThanOrEqualTo(currentIncludedInterval.getLowerBound())) {
+            if (currentExcludedInterval.upperBoundGreaterThanOrEqualTo(currentIncludedInterval.getUpperBound())) {
+                currentIncludedInterval = null;
+            } else {
+                currentIncludedInterval = new Interval(currentExcludedInterval.getUpperBound() + 1, currentIncludedInterval.getUpperBound());
+            }
+        }
+        return currentIncludedInterval;
     }
 }
 

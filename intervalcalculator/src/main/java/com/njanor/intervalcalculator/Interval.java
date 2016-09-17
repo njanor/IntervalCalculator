@@ -33,18 +33,18 @@ public class Interval implements Comparable<Interval> {
         this(lowerBound + "-" + upperBound);
     }
 
-    public boolean lowerBoundLowerThan(int value) {
+    public boolean lowerBoundLowerThanOrEqualTo(int value) {
         return lowerBound <= value;
     }
 
-    public boolean upperBoundGreaterThan(int value) {
+    public boolean upperBoundGreaterThanOrEqualTo(int value) {
         return value <= upperBound;
     }
 
     public boolean overlapsWith(Interval interval) {
-        return (lowerBoundLowerThan(interval.lowerBound) && upperBoundGreaterThan(interval.lowerBound)) ||
-                (lowerBoundLowerThan(interval.upperBound) && upperBoundGreaterThan(interval.upperBound)) ||
-                (interval.lowerBoundLowerThan(lowerBound) && interval.upperBoundGreaterThan(upperBound));
+        return (lowerBoundLowerThanOrEqualTo(interval.lowerBound) && upperBoundGreaterThanOrEqualTo(interval.lowerBound)) ||
+                (lowerBoundLowerThanOrEqualTo(interval.upperBound) && upperBoundGreaterThanOrEqualTo(interval.upperBound)) ||
+                (interval.lowerBoundLowerThanOrEqualTo(lowerBound) && interval.upperBoundGreaterThanOrEqualTo(upperBound));
     }
 
     public int getLowerBound() {

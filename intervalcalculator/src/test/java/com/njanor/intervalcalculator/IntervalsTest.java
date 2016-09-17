@@ -160,6 +160,16 @@ public class IntervalsTest
     }
 
     @Test
+    public void toString_onIntervalsWhereIncludedAndExcludedAreTheSame_returnsNoValue() {
+        final Interval interval = new Interval(10, 15);
+        Intervals intervals = new Intervals();
+        intervals.includeInterval(interval);
+        intervals.excludeInterval(interval);
+
+        assertEquals("No values", intervals.toString());
+    }
+
+    @Test
     public void toString_onFourthExampleFromCase_worksCorrectly() {
         Intervals intervals = new Intervals();
         intervals.includeInterval(new Interval(10, 100));

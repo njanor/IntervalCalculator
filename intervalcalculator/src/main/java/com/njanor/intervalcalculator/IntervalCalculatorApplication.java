@@ -6,20 +6,20 @@ public class IntervalCalculatorApplication
 {
     public static void main( String[] args )
     {
-        List<Interval> includeIntervals = null;
-        List<Interval> excludeIntervals = null;
+        List<Interval> intervalsToInclude = null;
+        List<Interval> intervalsToExclude = null;
 
         try {
-            includeIntervals = IntervalInterpreter.interpretIntervals(args[0]);
-            excludeIntervals = IntervalInterpreter.interpretIntervals(args[1]);
+            intervalsToInclude = IntervalInterpreter.interpretIntervalsFromString(args[0]);
+            intervalsToExclude = IntervalInterpreter.interpretIntervalsFromString(args[1]);
         } catch (IllegalArgumentException iae) {
             System.out.println("Illegal input");
             return;
         }
 
         Intervals intervals = new Intervals();
-        includeIntervals.forEach(intervals::includeInterval);
-        excludeIntervals.forEach(intervals::excludeInterval);
+        intervalsToInclude.forEach(intervals::includeInterval);
+        intervalsToExclude.forEach(intervals::excludeInterval);
 
         System.out.println(intervals);
     }
