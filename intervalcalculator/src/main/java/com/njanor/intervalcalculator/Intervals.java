@@ -9,9 +9,8 @@ public class Intervals {
     private List<ConcreteInterval> allIncludedIntervals = new ArrayList<>();
     private List<ConcreteInterval> allExcludedIntervals = new ArrayList<>();
 
-    public void includeInterval(int lowerBound, int upperBound) {
-
-        allIncludedIntervals.add(new ConcreteInterval(lowerBound, upperBound));
+    public void includeInterval(ConcreteInterval interval) {
+        allIncludedIntervals.add(interval);
     }
 
     public void excludeInterval(int lowerBound, int upperBound) {

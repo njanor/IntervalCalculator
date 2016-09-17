@@ -31,9 +31,7 @@ public class IntervalInterpreterTest {
         List<ConcreteInterval> interpretedIntervals = IntervalInterpreter.interpretIntervals("(" + input + ")");
         assertEquals(3, interpretedIntervals.size());
         Intervals intervals = new Intervals();
-        for (ConcreteInterval interval : interpretedIntervals) {
-            intervals.includeInterval(interval.getLowerBound(), interval.getUpperBound());
-        }
+        interpretedIntervals.forEach(intervals::includeInterval);
         assertEquals(input, intervals.toString());
     }
 }

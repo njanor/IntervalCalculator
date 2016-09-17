@@ -10,7 +10,7 @@ public class IntervalCalculatorApplication
         List<ConcreteInterval> excludeIntervals = IntervalInterpreter.interpretIntervals(args[1]);
 
         Intervals intervals = new Intervals();
-        includeIntervals.stream().forEach(ii -> intervals.includeInterval(ii.getLowerBound(), ii.getUpperBound()));
+        includeIntervals.forEach(intervals::includeInterval);
         excludeIntervals.stream().forEach(ei -> intervals.excludeInterval(ei.getLowerBound(), ei.getUpperBound()));
 
         System.out.println(intervals);
