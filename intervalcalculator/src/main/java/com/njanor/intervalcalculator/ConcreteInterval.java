@@ -4,6 +4,18 @@ public class ConcreteInterval implements Comparable<ConcreteInterval> {
     private final int lowerBound;
     private final int upperBound;
 
+    public ConcreteInterval(String input) {
+        this(getLowerBoundFromInput(input), getUpperBoundFromInput(input));
+    }
+
+    private static int getLowerBoundFromInput(String input) {
+        return Integer.parseInt(input.substring(0, input.indexOf('-')));
+    }
+
+    private static int getUpperBoundFromInput(String input) {
+        return Integer.parseInt(input.substring(input.indexOf('-') + 1, input.length()));
+    }
+
     public ConcreteInterval(int lowerBound, int upperBound) {
         this.lowerBound = Math.min(lowerBound, upperBound);
         this.upperBound = Math.max(lowerBound, upperBound);
