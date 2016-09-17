@@ -68,26 +68,19 @@ public class Intervals {
     }
 
     private Interval addIntervalBeforeExcludedIntervalAndReturnIntervalAfterExcludedInterval(List<Interval> finalIntervals, Interval currentIncludedInterval, Interval currentExcludedInterval) {
-        if (currentIncludedInterval.lowerBoundLowerThanOrEqualTo(currentExcludedInterval.getLowerBound())) {
-            if (currentIncludedInterval.getLowerBound() != currentExcludedInterval.getLowerBound()) {
-                finalIntervals.add(new Interval(currentIncludedInterval.getLowerBound(), currentExcludedInterval.getLowerBound() - 1));
+        List<Interval> resultingIntervals = currentIncludedInterval.except(currentExcludedInterval);
+        if (resultingIntervals.size() == 0)
+            return null;
+        else if (resultingIntervals.size() == 1) {
+            if (resultingIntervals.get(0).getLowerBound() == currentIncludedInterval.getLowerBound()) {
+                finalIntervals.add(resultingIntervals.get(0));
+                return null;
             }
-            if (currentIncludedInterval.upperBoundGreaterThanOrEqualTo(currentExcludedInterval.getUpperBound())) {
-                if (currentIncludedInterval.getUpperBound() != currentExcludedInterval.getUpperBound()) {
-                    currentIncludedInterval = new Interval(currentExcludedInterval.getUpperBound() + 1, currentIncludedInterval.getUpperBound());
-                }
-            } else {
-                currentIncludedInterval = null;
-            }
+            return resultingIntervals.get(0);
+        } else {
+            finalIntervals.add(resultingIntervals.get(0));
+            return resultingIntervals.get(1);
         }
-        if (currentIncludedInterval != null && currentExcludedInterval.lowerBoundLowerThanOrEqualTo(currentIncludedInterval.getLowerBound())) {
-            if (currentExcludedInterval.upperBoundGreaterThanOrEqualTo(currentIncludedInterval.getUpperBound())) {
-                currentIncludedInterval = null;
-            } else {
-                currentIncludedInterval = new Interval(currentExcludedInterval.getUpperBound() + 1, currentIncludedInterval.getUpperBound());
-            }
-        }
-        return currentIncludedInterval;
     }
 }
 

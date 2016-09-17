@@ -73,11 +73,11 @@ public class Interval implements Comparable<Interval> {
         if (!overlapsWith(other)) {
             result.add(this);
         } else {
-            if (upperBound > other.upperBound) {
-                result.add(new Interval(other.upperBound + 1, upperBound));
-            }
             if (lowerBound < other.lowerBound) {
                 result.add(new Interval(lowerBound, other.getLowerBound() - 1));
+            }
+            if (upperBound > other.upperBound) {
+                result.add(new Interval(other.upperBound + 1, upperBound));
             }
         }
         return result;

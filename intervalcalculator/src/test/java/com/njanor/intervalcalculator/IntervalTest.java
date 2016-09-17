@@ -101,7 +101,7 @@ public class IntervalTest {
         final Interval firstInterval = new Interval(10, 30);
         final Interval secondInterval = new Interval(15, 25);
 
-        List<Interval> result = firstInterval.except(secondInterval).stream().sorted().collect(Collectors.toList());
+        List<Interval> result = firstInterval.except(secondInterval);
 
         assertEquals(2, result.size());
         assertEquals(new Interval(firstInterval.getLowerBound(), secondInterval.getLowerBound() - 1).toString(), result.get(0).toString());
@@ -143,7 +143,7 @@ public class IntervalTest {
         final Interval firstInterval = new Interval(10, 15);
         final Interval secondInterval = new Interval(11, 14);
 
-        List<Interval> result = firstInterval.except(secondInterval).stream().sorted().collect(Collectors.toList());
+        List<Interval> result = firstInterval.except(secondInterval);
 
         assertEquals(2, result.size());
         assertEquals(new Interval(firstInterval.getLowerBound(), firstInterval.getLowerBound()).toString(), result.get(0).toString());
