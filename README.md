@@ -20,6 +20,6 @@ The exclude intervals are optional; simply leave them out if they are not needed
 
 ## Algorithmic complexity (Big-O)
 
-The complexity chosen is O(n*m) where n is the number of included intervals and m the number of excluded intervals.
+The complexity chosen is O(n*m) where n is the number of included intervals and m the number of excluded intervals. The basic reason is that upon printing the intervals, every excluded interval is compared to every included interval.
 
-This can be simplified to O(n log n) (where n is the number of intervals), but this would increase the complexity of the code, reducing readability as well as maintainability.
+This can be simplified to O(n log n) (where n is the number of intervals), but this would increase the complexity of the code, reducing readability as well as maintainability. The complexity here comes from sorting the lists of intervals. After that, you could run through the lists simultaneously, removing the handled elements one at a time.
