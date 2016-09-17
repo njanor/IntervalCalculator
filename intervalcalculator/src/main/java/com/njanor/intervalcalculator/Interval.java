@@ -1,11 +1,24 @@
 package com.njanor.intervalcalculator;
 
-public class ConcreteInterval implements Comparable<ConcreteInterval> {
+public class Interval implements Comparable<Interval> {
     private final int lowerBound;
     private final int upperBound;
 
-    public ConcreteInterval(String input) {
-        this(getLowerBoundFromInput(input), getUpperBoundFromInput(input));
+    public Interval(String input) {
+        validateInput(input);
+
+        int lowerBoundFromInput = getLowerBoundFromInput(input);
+        int upperBoundFromInput = getUpperBoundFromInput(input);
+
+        lowerBound = Math.min(lowerBoundFromInput, upperBoundFromInput);
+        upperBound = Math.max(lowerBoundFromInput, upperBoundFromInput);
+    }
+
+    private void validateInput(String input) {
+        final String intervalPattern = "^\\s*[0-9]+\\-[0-9]+";
+        if (input == null || !input.matches(intervalPattern)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private static int getLowerBoundFromInput(String input) {
@@ -16,9 +29,8 @@ public class ConcreteInterval implements Comparable<ConcreteInterval> {
         return Integer.parseInt(input.substring(input.indexOf('-') + 1, input.length()));
     }
 
-    public ConcreteInterval(int lowerBound, int upperBound) {
-        this.lowerBound = Math.min(lowerBound, upperBound);
-        this.upperBound = Math.max(lowerBound, upperBound);
+    public Interval(int lowerBound, int upperBound) {
+        this(lowerBound + "-" + upperBound);
     }
 
     public boolean lowerBoundLowerThan(int value) {
@@ -29,7 +41,7 @@ public class ConcreteInterval implements Comparable<ConcreteInterval> {
         return value <= upperBound;
     }
 
-    public boolean overlapsWith(ConcreteInterval interval) {
+    public boolean overlapsWith(Interval interval) {
         return (lowerBoundLowerThan(interval.lowerBound) && upperBoundGreaterThan(interval.lowerBound)) ||
                 (lowerBoundLowerThan(interval.upperBound) && upperBoundGreaterThan(interval.upperBound)) ||
                 (interval.lowerBoundLowerThan(lowerBound) && interval.upperBoundGreaterThan(upperBound));
@@ -49,7 +61,7 @@ public class ConcreteInterval implements Comparable<ConcreteInterval> {
     }
 
     @Override
-    public int compareTo(ConcreteInterval other) {
+    public int compareTo(Interval other) {
         return lowerBound - other.lowerBound;
     }
 }

@@ -6,13 +6,21 @@ public class IntervalCalculatorApplication
 {
     public static void main( String[] args )
     {
-        List<ConcreteInterval> includeIntervals = IntervalInterpreter.interpretIntervals(args[0]);
-        List<ConcreteInterval> excludeIntervals = IntervalInterpreter.interpretIntervals(args[1]);
+        List<Interval> includeIntervals = null;
+        List<Interval> excludeIntervals = null;
 
-        Intervals intervals = new Intervals();
-        includeIntervals.forEach(intervals::includeInterval);
-        excludeIntervals.stream().forEach(ei -> intervals.excludeInterval(ei.getLowerBound(), ei.getUpperBound()));
+        try {
+            includeIntervals = IntervalInterpreter.interpretIntervals(args[0]);
+            excludeIntervals = IntervalInterpreter.interpretIntervals(args[1]);
+        } catch (IllegalArgumentException iae) {
+            System.out.println("Illegal input");
+            return;
+        }
 
-        System.out.println(intervals);
+        IntervalCalculator intervalCalculator = new IntervalCalculator();
+        includeIntervals.forEach(intervalCalculator::includeInterval);
+        excludeIntervals.stream().forEach(ei -> intervalCalculator.excludeInterval(ei.getLowerBound(), ei.getUpperBound()));
+
+        System.out.println(intervalCalculator);
     }
 }
