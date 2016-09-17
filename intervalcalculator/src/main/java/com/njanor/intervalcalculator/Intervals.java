@@ -6,25 +6,28 @@ import java.util.stream.Collectors;
 
 public class Intervals {
 
-    private List<ConcreteInterval> allIncludedIntervals = new ArrayList<ConcreteInterval>();
+    private List<ConcreteInterval> allIncludedIntervals = new ArrayList<>();
+    private List<ConcreteInterval> allExcludedIntervals = new ArrayList<>();
 
     public void includeInterval(int lowerBound, int upperBound) {
-        if (upperBound < lowerBound) {
-            int swap = lowerBound;
-            lowerBound = upperBound;
-            upperBound = swap;
-        }
+
         allIncludedIntervals.add(new ConcreteInterval(lowerBound, upperBound));
+    }
+
+    public void excludeInterval(int lowerBound, int upperBound) {
+        allExcludedIntervals.add(new ConcreteInterval(lowerBound, upperBound));
     }
 
     @Override
     public String toString() {
-        if (allIncludedIntervals.isEmpty())
+        allIncludedIntervals = getNonOverlappingIntervals(allIncludedIntervals);
+        allExcludedIntervals = getNonOverlappingIntervals(allExcludedIntervals);
+        List<ConcreteInterval> finalIntervals = getIntervalsAndExclude(allIncludedIntervals, allExcludedIntervals);
+
+        if (finalIntervals.isEmpty())
             return "No values";
 
-        List<ConcreteInterval> finalIncludedIntervals = getNonOverlappingIntervals(allIncludedIntervals);
-
-        return String.join(",", finalIncludedIntervals.stream().map(ci -> ci.toString()).collect(Collectors.toList()));
+        return String.join(",", finalIntervals.stream().map(ci -> ci.toString()).collect(Collectors.toList()));
     }
 
     private List<ConcreteInterval> getNonOverlappingIntervals(List<ConcreteInterval> concreteIntervals) {
@@ -46,17 +49,58 @@ public class Intervals {
         return finalIncludedIntervals;
     }
 
+    private List<ConcreteInterval> getIntervalsAndExclude(List<ConcreteInterval> includedIntervals, List<ConcreteInterval> excludedIntervals) {
+        List<ConcreteInterval> intervals = new ArrayList<>();
+        for (int i = 0; i < includedIntervals.size(); i++) {
+            ConcreteInterval currentIncludeInterval = includedIntervals.get(i);
+            for (int j = 0; j < excludedIntervals.size() && currentIncludeInterval != null; j++) {
+                ConcreteInterval currentExcludeInterval = excludedIntervals.get(j);
+                if (currentIncludeInterval.overlapsWith(currentExcludeInterval)) {
+                    if (currentIncludeInterval.lowerBoundLowerThan(currentExcludeInterval.lowerBound)) {
+                        intervals.add(new ConcreteInterval(currentIncludeInterval.lowerBound, currentExcludeInterval.lowerBound - 1));
+                        if (currentIncludeInterval.upperBoundGreaterThan(currentExcludeInterval.upperBound)) {
+                            currentIncludeInterval = new ConcreteInterval(currentExcludeInterval.upperBound + 1, currentIncludeInterval.upperBound);
+                        }
+                        else {
+                            currentIncludeInterval = null;
+                        }
+                    }
+                    if (currentIncludeInterval != null && currentExcludeInterval.lowerBoundLowerThan(currentIncludeInterval.lowerBound)) {
+                        if (currentExcludeInterval.upperBoundGreaterThan(currentIncludeInterval.upperBound)) {
+                            currentIncludeInterval = null;
+                        } else {
+                            currentIncludeInterval = new ConcreteInterval(currentExcludeInterval.upperBound + 1, currentIncludeInterval.upperBound);
+                        }
+                    }
+                }
+            }
+            if (currentIncludeInterval != null)
+                intervals.add(currentIncludeInterval);
+        }
+        return intervals;
+    }
+
     private class ConcreteInterval implements Comparable<ConcreteInterval> {
         private final int lowerBound;
         private final int upperBound;
 
         public ConcreteInterval(int lowerBound, int upperBound) {
-            this.lowerBound = lowerBound;
-            this.upperBound = upperBound;
+            this.lowerBound = Math.min(lowerBound, upperBound);
+            this.upperBound = Math.max(lowerBound, upperBound);
         }
 
         public boolean lowerBoundLowerThan(int value) {
             return lowerBound <= value;
+        }
+
+        public boolean upperBoundGreaterThan(int value) {
+            return value <= upperBound;
+        }
+
+        public boolean overlapsWith(ConcreteInterval interval) {
+            return (lowerBoundLowerThan(interval.lowerBound) && upperBoundGreaterThan(interval.lowerBound)) ||
+                    (lowerBoundLowerThan(interval.upperBound) && upperBoundGreaterThan(interval.upperBound)) ||
+                    (interval.lowerBoundLowerThan(lowerBound) && interval.upperBoundGreaterThan(upperBound));
         }
 
         @Override

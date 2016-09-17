@@ -101,4 +101,107 @@ public class IntervalsTest
 
         assertEquals(expectedOutput, actualOutput);
     }
+
+    @Test
+    public void toString_OnIntervalWithOverlappingExcludeInterval_OutputsTheCorrectTwoIntervals() {
+        final int includeLowerBound = 20;
+        final int includeUpperBound = 2000;
+        final int excludeLowerBound = 50;
+        final int excludeUpperBound = 1000;
+        final String expectedOutput = includeLowerBound + "-" + (excludeLowerBound - 1) + "," + (excludeUpperBound + 1) + "-" + includeUpperBound;
+        Intervals intervals = new Intervals();
+        intervals.includeInterval(includeLowerBound, includeUpperBound);
+        intervals.excludeInterval(excludeLowerBound, excludeUpperBound);
+
+        String actualOutput = intervals.toString();
+
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    public void toString_OnIntervalWithTwoOverlappingExcludeintervals_OutputsTheCorrectThreeIntervals() {
+        final int includeLowerBound = 100;
+        final int includeUpperBound = 1000;
+        final int firstExcludeLowerBound = 101;
+        final int firstExcludeUpperBound = 150;
+        final int secondExcludeLowerBound = 200;
+        final int secondExcludeUpperBound = 350;
+        final String expectedOutput = includeLowerBound + "-" + (firstExcludeLowerBound - 1) + "," + (firstExcludeUpperBound + 1) + "-" + (secondExcludeLowerBound - 1) + "," + (secondExcludeUpperBound + 1) + "-" + includeUpperBound;
+        Intervals intervals = new Intervals();
+        intervals.includeInterval(includeLowerBound, includeUpperBound);
+        intervals.excludeInterval(firstExcludeLowerBound, firstExcludeUpperBound);
+        intervals.excludeInterval(secondExcludeLowerBound, secondExcludeUpperBound);
+
+        String actualOutput = intervals.toString();
+
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    public void toString_OnIntervalWithTwoOusideOverlappingExcludeInterval_OutputTheCorrectInterval() {
+        final int includeLowerBound = 20;
+        final int includeUpperBound = 30;
+        final int firstExcludeLowerBound = 15;
+        final int firstExcludeUpperBound = 22;
+        final int secondExcludeLowerBound = 28;
+        final int secondExcludeUpperBound = 40;
+        final String expectedOutput = (firstExcludeUpperBound + 1) + "-" + (secondExcludeLowerBound - 1);
+        Intervals intervals = new Intervals();
+        intervals.includeInterval(includeLowerBound, includeUpperBound);
+        intervals.excludeInterval(firstExcludeLowerBound, firstExcludeUpperBound);
+        intervals.excludeInterval(secondExcludeLowerBound, secondExcludeUpperBound);
+
+        String actualOutput = intervals.toString();
+
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    public void toString_OnIntervalCompletelyExcluded_OutputsNoValue() {
+        Intervals intervals = new Intervals();
+        intervals.includeInterval(10, 20);
+        intervals.excludeInterval(0, 100);
+
+        assertEquals("No values", intervals.toString());
+    }
+
+    @Test
+    public void toString_OnIntervalsWithNonOverlappingExcludeInterval_OutputsTheIntervals() {
+        final int firstIncludeLowerBound = 1;
+        final int firstIncludeUpperBound = 10;
+        final int secondIncludeLowerBound = 100;
+        final int secondIncludeUpperBound = 200;
+        final int firstExcludeLowerBound = -10;
+        final int firstExcludeUpperBound = 0;
+        final int secondExcludeLowerBound = 20;
+        final int secondExcludeUpperBound = 80;
+        final int thirdExcludeLowerBound = 250;
+        final int thirdExcludeUpperBound = 1000;
+        final String expectedOutput = firstIncludeLowerBound + "-" + firstIncludeUpperBound + "," + secondIncludeLowerBound + "-" + secondIncludeUpperBound;
+        Intervals intervals = new Intervals();
+        intervals.includeInterval(firstIncludeLowerBound, firstIncludeUpperBound);
+        intervals.includeInterval(secondIncludeLowerBound, secondIncludeUpperBound);
+        intervals.excludeInterval(firstExcludeLowerBound, firstExcludeUpperBound);
+        intervals.excludeInterval(secondExcludeLowerBound, secondExcludeUpperBound);
+        intervals.excludeInterval(thirdExcludeLowerBound, thirdExcludeUpperBound);
+
+        String actualOutput = intervals.toString();
+
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
+    public void toString_OnFourtExcampleFromCase_WorksCorrectly() {
+        Intervals intervals = new Intervals();
+        intervals.includeInterval(10, 100);
+        intervals.includeInterval(200, 300);
+        intervals.includeInterval(400, 500);
+        intervals.excludeInterval(95, 205);
+        intervals.excludeInterval(410, 420);
+        final String expectedOutput = "10-94,206-300,400-409,421-500";
+
+        String actualOutput = intervals.toString();
+
+        assertEquals(expectedOutput, actualOutput);
+    }
 }
