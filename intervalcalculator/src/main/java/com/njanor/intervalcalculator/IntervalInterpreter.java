@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IntervalInterpreter {
-    public static List<Interval> interpretIntervals(String input) {
-        input = input.substring(1, input.length() - 1);
+    static List<Interval> interpretIntervals(String input) {
         return interpretRestOfIntervals(new ArrayList<>(), input);
     }
 
