@@ -87,12 +87,11 @@ public class IntervalCalculatorTest
     @Test
     public void toString_onIntervalWithOverlappingExcludeInterval_outputsTheCorrectTwoIntervals() {
         final Interval includeInterval = new Interval(20, 2000);
-        final int excludeLowerBound = 50;
-        final int excludeUpperBound = 1000;
-        final String expectedOutput = includeInterval.getLowerBound() + "-" + (excludeLowerBound - 1) + "," + (excludeUpperBound + 1) + "-" + includeInterval.getUpperBound();
+        final Interval excludeInterval = new Interval(50, 1000);
+        final String expectedOutput = includeInterval.getLowerBound() + "-" + (excludeInterval.getLowerBound() - 1) + "," + (excludeInterval.getUpperBound() + 1) + "-" + includeInterval.getUpperBound();
         IntervalCalculator intervalCalculator = new IntervalCalculator();
         intervalCalculator.includeInterval(includeInterval);
-        intervalCalculator.excludeInterval(excludeLowerBound, excludeUpperBound);
+        intervalCalculator.excludeInterval(excludeInterval);
 
         String actualOutput = intervalCalculator.toString();
 
@@ -102,15 +101,13 @@ public class IntervalCalculatorTest
     @Test
     public void toString_onIntervalWithTwoOverlappingExcludeIntervals_outputsTheCorrectThreeIntervals() {
         final Interval includeInterval = new Interval(100, 1000);
-        final int firstExcludeLowerBound = 101;
-        final int firstExcludeUpperBound = 150;
-        final int secondExcludeLowerBound = 200;
-        final int secondExcludeUpperBound = 350;
-        final String expectedOutput = includeInterval.getLowerBound() + "-" + (firstExcludeLowerBound - 1) + "," + (firstExcludeUpperBound + 1) + "-" + (secondExcludeLowerBound - 1) + "," + (secondExcludeUpperBound + 1) + "-" + includeInterval.getUpperBound();
+        final Interval firstExcludeInterval = new Interval(101, 150);
+        final Interval secondExcludeInterval = new Interval(200, 350);
+        final String expectedOutput = includeInterval.getLowerBound() + "-" + (firstExcludeInterval.getLowerBound() - 1) + "," + (firstExcludeInterval.getUpperBound() + 1) + "-" + (secondExcludeInterval.getLowerBound() - 1) + "," + (secondExcludeInterval.getUpperBound() + 1) + "-" + includeInterval.getUpperBound();
         IntervalCalculator intervalCalculator = new IntervalCalculator();
         intervalCalculator.includeInterval(includeInterval);
-        intervalCalculator.excludeInterval(firstExcludeLowerBound, firstExcludeUpperBound);
-        intervalCalculator.excludeInterval(secondExcludeLowerBound, secondExcludeUpperBound);
+        intervalCalculator.excludeInterval(firstExcludeInterval);
+        intervalCalculator.excludeInterval(secondExcludeInterval);
 
         String actualOutput = intervalCalculator.toString();
 
@@ -120,15 +117,13 @@ public class IntervalCalculatorTest
     @Test
     public void toString_onIntervalWithTwoOutsideOverlappingExcludeInterval_outputsTheCorrectInterval() {
         final Interval includeInterval = new Interval(20, 30);
-        final int firstExcludeLowerBound = 15;
-        final int firstExcludeUpperBound = 22;
-        final int secondExcludeLowerBound = 28;
-        final int secondExcludeUpperBound = 40;
-        final String expectedOutput = (firstExcludeUpperBound + 1) + "-" + (secondExcludeLowerBound - 1);
+        final Interval firstExcludedInterval = new Interval(15, 22);
+        final Interval secondExcludedInterval = new Interval(28, 40);
+        final String expectedOutput = (firstExcludedInterval.getUpperBound() + 1) + "-" + (secondExcludedInterval.getLowerBound() - 1);
         IntervalCalculator intervalCalculator = new IntervalCalculator();
         intervalCalculator.includeInterval(includeInterval);
-        intervalCalculator.excludeInterval(firstExcludeLowerBound, firstExcludeUpperBound);
-        intervalCalculator.excludeInterval(secondExcludeLowerBound, secondExcludeUpperBound);
+        intervalCalculator.excludeInterval(firstExcludedInterval);
+        intervalCalculator.excludeInterval(secondExcludedInterval);
 
         String actualOutput = intervalCalculator.toString();
 
@@ -139,7 +134,7 @@ public class IntervalCalculatorTest
     public void toString_onIntervalCompletelyExcluded_outputsNoValue() {
         IntervalCalculator intervalCalculator = new IntervalCalculator();
         intervalCalculator.includeInterval(new Interval(10, 20));
-        intervalCalculator.excludeInterval(0, 100);
+        intervalCalculator.excludeInterval(new Interval(0, 100));
 
         assertEquals("No values", intervalCalculator.toString());
     }
@@ -148,19 +143,16 @@ public class IntervalCalculatorTest
     public void toString_onIntervalsWithNonOverlappingExcludeInterval_outputsTheIntervals() {
         final Interval firstIncludeInterval = new Interval(1, 10);
         final Interval secondIncludeInterval = new Interval(100, 200);
-        final int firstExcludeLowerBound = 0;
-        final int firstExcludeUpperBound = 0;
-        final int secondExcludeLowerBound = 20;
-        final int secondExcludeUpperBound = 80;
-        final int thirdExcludeLowerBound = 250;
-        final int thirdExcludeUpperBound = 1000;
+        final Interval firstExcludeInterval = new Interval(0, 0);
+        final Interval secondExcludeInterval = new Interval(20, 80);
+        final Interval thirdExcludeInterval = new Interval(250, 1000);
         final String expectedOutput = firstIncludeInterval + "," + secondIncludeInterval;
         IntervalCalculator intervalCalculator = new IntervalCalculator();
         intervalCalculator.includeInterval(firstIncludeInterval);
         intervalCalculator.includeInterval(secondIncludeInterval);
-        intervalCalculator.excludeInterval(firstExcludeLowerBound, firstExcludeUpperBound);
-        intervalCalculator.excludeInterval(secondExcludeLowerBound, secondExcludeUpperBound);
-        intervalCalculator.excludeInterval(thirdExcludeLowerBound, thirdExcludeUpperBound);
+        intervalCalculator.excludeInterval(firstExcludeInterval);
+        intervalCalculator.excludeInterval(secondExcludeInterval);
+        intervalCalculator.excludeInterval(thirdExcludeInterval);
 
         String actualOutput = intervalCalculator.toString();
 
@@ -173,8 +165,8 @@ public class IntervalCalculatorTest
         intervalCalculator.includeInterval(new Interval(10, 100));
         intervalCalculator.includeInterval(new Interval(200, 300));
         intervalCalculator.includeInterval(new Interval(400, 500));
-        intervalCalculator.excludeInterval(95, 205);
-        intervalCalculator.excludeInterval(410, 420);
+        intervalCalculator.excludeInterval(new Interval(95, 205));
+        intervalCalculator.excludeInterval(new Interval(410, 420));
         final String expectedOutput = "10-94,206-300,400-409,421-500";
 
         String actualOutput = intervalCalculator.toString();

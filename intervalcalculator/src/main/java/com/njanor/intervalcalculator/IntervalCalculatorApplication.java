@@ -19,7 +19,7 @@ public class IntervalCalculatorApplication
 
         IntervalCalculator intervalCalculator = new IntervalCalculator();
         includeIntervals.forEach(intervalCalculator::includeInterval);
-        excludeIntervals.stream().forEach(ei -> intervalCalculator.excludeInterval(ei.getLowerBound(), ei.getUpperBound()));
+        excludeIntervals.forEach(intervalCalculator::excludeInterval);
 
         System.out.println(intervalCalculator);
     }

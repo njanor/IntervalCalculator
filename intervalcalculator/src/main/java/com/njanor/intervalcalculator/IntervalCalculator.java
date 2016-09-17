@@ -13,8 +13,8 @@ public class IntervalCalculator {
         allIncludedIntervals.add(interval);
     }
 
-    public void excludeInterval(int lowerBound, int upperBound) {
-        allExcludedIntervals.add(new Interval(lowerBound, upperBound));
+    public void excludeInterval(Interval interval) {
+        allExcludedIntervals.add(interval);
     }
 
     @Override
